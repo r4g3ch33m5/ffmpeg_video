@@ -1,6 +1,7 @@
 package ffmpeg
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -9,13 +10,13 @@ import (
 	"strings"
 	"time"
 
-	ffmpeg_video "github.com/r4g3ch33m5/ffmpeg_video/api/service"
+	api "github.com/r4g3ch33m5/ffmpeg_video/api/service"
 	"github.com/r4g3ch33m5/ffmpeg_video/service"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
-// ConvertCommand defines the subcommand for converting video formats
-var ConvertCommand = &cli.Command{
+// SplitByChunksCommand defines the subcommand for converting video formats
+var SplitByChunksCommand = &cli.Command{
 	Name:  "split",
 	Usage: "Split a video file into chunks of a specified size",
 	Flags: []cli.Flag{
@@ -38,7 +39,7 @@ var ConvertCommand = &cli.Command{
 			Value:   30, // Default chunk size
 		},
 	},
-	Action: func(c *cli.Context) error {
+	Action: func(ctx context.Context, c *cli.Command) error {
 		input := c.String("input")
 		dateFolder := "video_" + time.Now().Format("02_01_06")
 		if input == "" {
@@ -58,10 +59,10 @@ var ConvertCommand = &cli.Command{
 			// Check if it's a file (not a directory)
 			if !d.IsDir() {
 				log.Printf("Splitting video '%s' into chunks of %d seconds...\n", input, chunkSize)
-				if err := service.SplitVideoIntoChunks(c.Context, &ffmpeg_video.SplitVideoRequest{
+				if err := service.SplitVideoIntoChunks(ctx, &api.SplitVideoRequest{
 					InputFile:    path,
 					OutputDir:    output,
-					CutTimeStamp: []*ffmpeg_video.VideoTimestamp{},
+					CutTimeStamp: []*api.VideoTimestamp{},
 					ChunkSize:    int32(chunkSize),
 				}); err != nil {
 					return fmt.Errorf("error splitting video: %v", err)
@@ -136,7 +137,7 @@ var SplitByTimestampsCommand = &cli.Command{
 			Required: true,
 		},
 	},
-	Action: func(c *cli.Context) error {
+	Action: func(ctx context.Context, c *cli.Command) error {
 		inputFile := c.String("input")
 		timestamps := c.StringSlice("timestamps")
 		outputDir := c.String("output")

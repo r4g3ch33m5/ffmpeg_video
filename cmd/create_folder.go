@@ -1,13 +1,14 @@
 package cmd
 
 import (
+	"context"
 	"log"
 	"os"
 	"path/filepath"
 	"time"
 
 	"github.com/robfig/cron/v3"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 // createDailyFolder creates a folder named with today's date (video_dd_mm_yy) under the 'source' folder
@@ -60,7 +61,7 @@ func StartCronJob() {
 var CreateCommand = &cli.Command{
 	Name:  "start",
 	Usage: "Start the cron job for creating daily folders",
-	Action: func(c *cli.Context) error {
+	Action: func(ctx context.Context, c *cli.Command) error {
 		StartCronJob()
 		return nil
 	},

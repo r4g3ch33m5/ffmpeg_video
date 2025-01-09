@@ -1,9 +1,10 @@
 package ffmpeg
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 // ResizeCommand defines the subcommand for resizing a video
@@ -31,7 +32,7 @@ var ResizeCommand = &cli.Command{
 			Required: true,
 		},
 	},
-	Action: func(c *cli.Context) error {
+	Action: func(ctx context.Context, c *cli.Command) error {
 		input := c.String("input")
 		output := c.String("output")
 		resolution := c.String("resolution")

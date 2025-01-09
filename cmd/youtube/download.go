@@ -1,11 +1,12 @@
 package youtube
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os/exec"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 // downloadVideo downloads a YouTube video using yt-dlp or youtube-dl
@@ -41,7 +42,7 @@ var DownloadCommand = &cli.Command{
 			Required: true,
 		},
 	},
-	Action: func(c *cli.Context) error {
+	Action: func(ctx context.Context, c *cli.Command) error {
 		url := c.String("url")
 		output := c.String("output")
 

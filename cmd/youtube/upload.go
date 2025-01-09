@@ -8,7 +8,7 @@ import (
 
 	youtube "google.golang.org/api/youtube/v3"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 // UploadVideo uploads a video to YouTube
@@ -88,7 +88,7 @@ var UploadCommand = &cli.Command{
 			Value:   "public",
 		},
 	},
-	Action: func(c *cli.Context) error {
+	Action: func(ctx context.Context, c *cli.Command) error {
 		filePath := c.String("file")
 		title := c.String("title")
 		description := c.String("description")

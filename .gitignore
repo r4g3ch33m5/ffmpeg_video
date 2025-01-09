@@ -3,7 +3,6 @@
 
 # heavy file
 **.mp4
-source/*
 output/*
 
 # third party folder

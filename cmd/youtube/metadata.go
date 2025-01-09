@@ -1,11 +1,12 @@
 package youtube
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os/exec"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 // fetchMetadata fetches metadata of a YouTube video
@@ -35,7 +36,7 @@ var MetadataCommand = &cli.Command{
 			Required: true,
 		},
 	},
-	Action: func(c *cli.Context) error {
+	Action: func(ctx context.Context, c *cli.Command) error {
 		url := c.String("url")
 
 		log.Printf("Fetching metadata for '%s'...\n", url)
