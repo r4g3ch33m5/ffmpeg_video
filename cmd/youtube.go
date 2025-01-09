@@ -1,0 +1,21 @@
+package cmd
+
+import (
+	"os"
+
+	"github.com/r4g3ch33m5/ffmpeg_video/cmd/youtube"
+	"github.com/urfave/cli/v2"
+)
+
+// YoutubeCommand defines the main YouTube command group
+var YoutubeCommand = &cli.Command{
+	Name:  "youtube",
+	Usage: "Perform various operations on YouTube videos",
+	Subcommands: []*cli.Command{
+		youtube.DownloadCommand,
+		youtube.ExtractAudioCommand,
+		youtube.MetadataCommand,
+	},
+}
+
+var _ = os.Interrupt

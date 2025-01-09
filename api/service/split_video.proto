@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+
+option go_package="github.com/r4g3ch33m5/ffmpeg_video";
+
+
+message VideoTimestamp {
+    int32 start = 1;
+    int32 end = 2;
+}
+
+message SplitVideoRequest {
+    string input_file =1; 
+    string output_dir = 2;
+    repeated VideoTimestamp cut_time_stamp = 3;
+    int32 chunk_size  = 4;
+}

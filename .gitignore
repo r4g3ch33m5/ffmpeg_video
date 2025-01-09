@@ -1,0 +1,11 @@
+# setting folder
+.vscode/ 
+
+# heavy file
+**.mp4
+source/*
+output/*
+
+# third party folder
+api/third_party/*
+vendor/
