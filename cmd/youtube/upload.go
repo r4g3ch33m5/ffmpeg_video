@@ -2,21 +2,52 @@ package youtube
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
+	"google.golang.org/api/option"
 	youtube "google.golang.org/api/youtube/v3"
 
 	"github.com/urfave/cli/v3"
 )
 
+func getToken() (*oauth2.Token, error) {
+	tokenFile := filepath.Join(".", "credential", "token.json")
+	file, err := os.Open(tokenFile)
+	if err != nil {
+		return nil, fmt.Errorf("unable to open token file: %v", err)
+	}
+	defer file.Close()
+
+	var token oauth2.Token
+	if err := json.NewDecoder(file).Decode(&token); err != nil {
+		return nil, fmt.Errorf("unable to parse token file: %v", err)
+	}
+	return &token, nil
+
+}
+
 // UploadVideo uploads a video to YouTube
 func UploadVideo(filePath, title, description, categoryId, privacyStatus string) error {
 	ctx := context.Background()
+	credBytes, _ := os.ReadFile(filepath.Join(".", "credential", "google_client.json"))
 
-	// Load the client secret from a file
-	service, err := youtube.NewService(ctx)
+	cred, err := google.ConfigFromJSON(credBytes, youtube.YoutubeUploadScope)
+	if err != nil {
+		fmt.Println("config", err)
+		return err
+	}
+	token, err := getToken()
+	if err != nil {
+		fmt.Println("token:", err)
+		return err
+	}
+	service, err := youtube.NewService(ctx, option.WithHTTPClient(cred.Client(ctx, token)))
 	if err != nil {
 		return fmt.Errorf("unable to create YouTube client: %w", err)
 	}
@@ -85,7 +116,7 @@ var UploadCommand = &cli.Command{
 			Name:    "privacy_status",
 			Aliases: []string{"p"},
 			Usage:   "Privacy status of the video (public, private, unlisted)",
-			Value:   "public",
+			Value:   "private",
 		},
 	},
 	Action: func(ctx context.Context, c *cli.Command) error {

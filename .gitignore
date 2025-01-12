@@ -1,6 +1,7 @@
 # setting folder
 .vscode/ 
-
+credential/*
+.env
 # heavy file
 **.mp4
 output/*

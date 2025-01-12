@@ -15,6 +15,8 @@ var YoutubeCommand = &cli.Command{
 		youtube.DownloadCommand,
 		youtube.ExtractAudioCommand,
 		youtube.MetadataCommand,
+		youtube.UploadCommand,
+		youtube.Oauth2Command,
 	},
 }
 

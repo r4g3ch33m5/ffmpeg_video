@@ -78,7 +78,7 @@ var CombineVideosCommand = &cli.Command{
 			Aliases: []string{"m"},
 			Usage:   "Mode for combining videos ('horizontal' or 'vertical')",
 			// Required: true,
-
+			Value: "vertical",
 		},
 	},
 	Action: func(ctx context.Context, c *cli.Command) error {
