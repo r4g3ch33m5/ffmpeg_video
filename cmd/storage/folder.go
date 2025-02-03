@@ -1,13 +1,12 @@
-package cmd
+package storage
 
 import (
 	"context"
 	"log"
 	"os"
 	"path/filepath"
-	"time"
 
-	"github.com/robfig/cron/v3"
+	"github.com/r4g3ch33m5/ffmpeg_video/util"
 	"github.com/urfave/cli/v3"
 )
 
@@ -24,7 +23,7 @@ func createDailyFolder() {
 	}
 
 	// Generate the folder name as today's date
-	dateFolder := "video_" + time.Now().Format("02_01_06")
+	dateFolder := util.GetTodayFolder()
 	folderPath := filepath.Join(sourceDir, dateFolder)
 
 	// Create the date-named folder
@@ -39,30 +38,12 @@ func createDailyFolder() {
 	}
 }
 
-// StartCronJob initializes and starts the cron job for creating daily folders
-func StartCronJob() {
-	cronScheduler := cron.New()
-
-	// Schedule the job to run every day at 2:00 AM
-	_, err := cronScheduler.AddFunc("0 2 * * *", createDailyFolder)
-	if err != nil {
-		log.Fatalf("Failed to schedule cron job: %v", err)
-	}
-	// trigger when start pod
-	createDailyFolder()
-	log.Println("Cron job scheduled. Running...")
-	cronScheduler.Start()
-
-	// Keep the app running to allow cron to execute tasks
-	select {}
-}
-
-// CreateCommand defines the CLI command for starting the cron scheduler
-var CreateCommand = &cli.Command{
-	Name:  "start",
-	Usage: "Start the cron job for creating daily folders",
+// CreateLocalFolderCommand defines the CLI command for starting the cron scheduler
+var CreateLocalFolderCommand = &cli.Command{
+	Name:  "create_local",
+	Usage: "create daily folders on local storage",
 	Action: func(ctx context.Context, c *cli.Command) error {
-		StartCronJob()
+		createDailyFolder()
 		return nil
 	},
 }

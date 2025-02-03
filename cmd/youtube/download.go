@@ -4,18 +4,21 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
 
+	"github.com/r4g3ch33m5/ffmpeg_video/util"
 	"github.com/urfave/cli/v3"
 )
 
 // downloadVideo downloads a YouTube video using yt-dlp or youtube-dl
 func downloadVideo(url, outputDir string) error {
-	cmd := exec.Command("yt-dlp", "-o", fmt.Sprintf("%s/%%(title)s.%%(ext)s", outputDir), url)
-	cmd.Stderr = nil
-	cmd.Stdout = nil
-
-	log.Printf("Executing command: yt-dlp -o '%s/%%(title)s.%%(ext)s' %s\n", outputDir, url)
+	if outputDir == "" {
+		outputDir = util.GetTodayFolder()
+	}
+	cmd := exec.Command("yt-dlp", "-o", fmt.Sprintf("%s/%%(channel)s.%%(id)s.%%(ext)s", outputDir), url)
+	cmd.Stderr = os.Stderr
+	cmd.Stdout = os.Stdout
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("failed to download video: %w", err)
 	}
@@ -36,10 +39,10 @@ var DownloadCommand = &cli.Command{
 			Required: true,
 		},
 		&cli.StringFlag{
-			Name:     "output",
-			Aliases:  []string{"o"},
-			Usage:    "Path to the output directory",
-			Required: true,
+			Name:    "output",
+			Aliases: []string{"o"},
+			Usage:   "Path to the output directory",
+			// Required: true,
 		},
 	},
 	Action: func(ctx context.Context, c *cli.Command) error {

@@ -13,9 +13,10 @@ func main() {
 	app := &cli.Command{
 		Name: "ffmpeg_tool",
 		Commands: []*cli.Command{
-			cmd.CreateCommand,
+			cmd.CreateFolderCommand,
 			cmd.FfmpegCommand,
 			cmd.YoutubeCommand,
+			cmd.GptCommand,
 		},
 	}
 	ctx := context.TODO()

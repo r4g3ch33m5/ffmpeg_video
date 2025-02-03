@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"os"
-
 	"github.com/r4g3ch33m5/ffmpeg_video/cmd/youtube"
 	"github.com/urfave/cli/v3"
 )
@@ -19,5 +17,3 @@ var YoutubeCommand = &cli.Command{
 		youtube.Oauth2Command,
 	},
 }
-
-var _ = os.Interrupt

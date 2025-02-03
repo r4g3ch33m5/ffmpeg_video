@@ -1,7 +1,7 @@
 init:
 	cd api/third_party && git clone https://github.com/protocolbuffers/protobuf.git src/google/protobuf
-create:
-	go run main.go start
+create_local:
+	go run main.go storage create_local
 
 split:
 	go run main.go ffmpeg split
@@ -26,5 +26,11 @@ upload:
 oauth: 
 	go run main.go youtube oauth2
 
-tidy: 
+gpt:
+	go run main.go gpt summarize -subject="rick and morty" -episode="season 1 episode 7"
+
+download:
+	go run main.go youtube download -url="https://www.youtube.com/shorts/VeOqnwavhLY"
+
+tidy:
 	go mod tidy && go mod vendor

@@ -8,10 +8,10 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"time"
 
 	api "github.com/r4g3ch33m5/ffmpeg_video/api/service"
 	"github.com/r4g3ch33m5/ffmpeg_video/service"
+	"github.com/r4g3ch33m5/ffmpeg_video/util"
 	"github.com/urfave/cli/v3"
 )
 
@@ -41,7 +41,7 @@ var SplitByChunksCommand = &cli.Command{
 	},
 	Action: func(ctx context.Context, c *cli.Command) error {
 		input := c.String("input")
-		dateFolder := "video_" + time.Now().Format("02_01_06")
+		dateFolder := util.GetTodayFolder()
 		if input == "" {
 			input = filepath.Join(".", "source", dateFolder)
 			fmt.Println(input)
