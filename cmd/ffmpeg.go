@@ -13,7 +13,7 @@ var FfmpegCommand = &cli.Command{
 	Commands: []*cli.Command{
 		ffmpeg.SplitByChunksCommand,
 		ffmpeg.ResizeCommand,
-		ffmpeg.ExtractCommand,
+		ffmpeg.ExtractAudioCommand,
 		ffmpeg.SplitByTimestampsCommand,
 		ffmpeg.CombineVideosCommand,
 		ffmpeg.AddWatermarkCommand,

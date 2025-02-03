@@ -30,7 +30,13 @@ gpt:
 	go run main.go gpt summarize -subject="rick and morty" -episode="season 1 episode 7"
 
 download:
-	go run main.go youtube download -url="https://www.youtube.com/shorts/VeOqnwavhLY"
+	go run main.go youtube download -url="https://www.youtube.com/watch?v=3Bq8uokFqOo"
+
+extract_audio:
+	go run main.go ffmpeg extract_audio
+
+full:
+	go run main.go full -source="https://www.youtube.com/watch?v=3Bq8uokFqOo"
 
 tidy:
 	go mod tidy && go mod vendor

@@ -11,12 +11,18 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-// downloadVideo downloads a YouTube video using yt-dlp or youtube-dl
-func downloadVideo(url, outputDir string) error {
+// DownloadVideo downloads a YouTube video using yt-dlp or youtube-dl
+func DownloadVideo(url, outputDir string) error {
 	if outputDir == "" {
 		outputDir = util.GetTodayFolder()
 	}
-	cmd := exec.Command("yt-dlp", "-o", fmt.Sprintf("%s/%%(channel)s.%%(id)s.%%(ext)s", outputDir), url)
+	opts := []string{
+		"--force-overwrites",
+		"-o", fmt.Sprintf("%s/%%(channel_id)s.%%(id)s.%%(ext)s", outputDir),
+		"-o", fmt.Sprintf("subtitle:%s/%%(uploader)s/subs/%%(id)s.%%(ext)s", outputDir),
+		url,
+	}
+	cmd := exec.Command("yt-dlp", opts...)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
 	if err := cmd.Run(); err != nil {
@@ -50,7 +56,7 @@ var DownloadCommand = &cli.Command{
 		output := c.String("output")
 
 		log.Printf("Downloading video from '%s'...\n", url)
-		if err := downloadVideo(url, output); err != nil {
+		if err := DownloadVideo(url, output); err != nil {
 			return fmt.Errorf("error downloading video: %v", err)
 		}
 

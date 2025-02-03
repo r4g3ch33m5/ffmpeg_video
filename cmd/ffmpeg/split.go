@@ -41,34 +41,28 @@ var SplitByChunksCommand = &cli.Command{
 	},
 	Action: func(ctx context.Context, c *cli.Command) error {
 		input := c.String("input")
+		fmt.Println("split by chunk input", input, input == "")
 		dateFolder := util.GetTodayFolder()
 		if input == "" {
-			input = filepath.Join(".", "source", dateFolder)
+			input = filepath.Join(".", dateFolder)
 			fmt.Println(input)
 		}
 		output := c.String("output")
 		if output == "" {
-			output = filepath.Join(".", "output", dateFolder)
+			output = filepath.Join("splitted", dateFolder)
 		}
 		chunkSize := c.Int("chunk_size")
-
-		err := filepath.WalkDir(input, func(path string, d os.DirEntry, err error) error {
+		err := util.ApplyAllFileInDir(input, func(path string) error {
+			err := service.SplitVideoIntoChunks(ctx, &api.SplitVideoRequest{
+				InputFile:    path,
+				OutputDir:    output,
+				CutTimeStamp: []*api.VideoTimestamp{},
+				ChunkSize:    int32(chunkSize),
+			})
 			if err != nil {
-				return err
+				fmt.Println(err)
+				return fmt.Errorf("error splitting video: %v", err)
 			}
-			// Check if it's a file (not a directory)
-			if !d.IsDir() {
-				log.Printf("Splitting video '%s' into chunks of %d seconds...\n", input, chunkSize)
-				if err := service.SplitVideoIntoChunks(ctx, &api.SplitVideoRequest{
-					InputFile:    path,
-					OutputDir:    output,
-					CutTimeStamp: []*api.VideoTimestamp{},
-					ChunkSize:    int32(chunkSize),
-				}); err != nil {
-					return fmt.Errorf("error splitting video: %v", err)
-				}
-			}
-
 			return nil
 		})
 

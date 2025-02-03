@@ -13,6 +13,7 @@ func main() {
 	app := &cli.Command{
 		Name: "ffmpeg_tool",
 		Commands: []*cli.Command{
+			cmd.FullFlowCommand,
 			cmd.CreateFolderCommand,
 			cmd.FfmpegCommand,
 			cmd.YoutubeCommand,

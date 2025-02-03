@@ -4,6 +4,7 @@ credential/*
 .env
 # heavy file
 **.mp4
+**.webm
 output/*
 
 # third party folder

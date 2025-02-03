@@ -2,35 +2,20 @@ package gpt
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/r4g3ch33m5/ffmpeg_video/cmd/gpt/adapter"
 	"github.com/urfave/cli/v3"
 )
 
-var apiKey string
-
-func init() {
-	val, err := os.ReadFile("./credential/chatgpt.json")
-	if err != nil {
-		panic(err)
-	}
-	value := make(map[string]string)
-	json.Unmarshal(val, &value)
-	apiKey = value["api_key"]
-}
-
 // summarizePrompt generates the prompt for summarization
 func Prompt(subject, episode string) string {
 	basePrompt := `
-[Remeber you are summarizing %[1]s] 
-[Remember each episode contains multiple arcs]
-[Remember each arcs contains multiple highlights]
-[Remember total duration of highlight in an arc do not exceed 30 seconds] 
-[Remember each highlights in specific timestamps format start-end]
-
+[you are summarizing %[1]s] 
+[each episode contains multiple highlights]
+[total duration do not exceed 30 seconds] 
+[each highlights in format: <start of highlight timestamp in video>-<end of highlight timestamp in video>]
+[answer in format: "Summary: [episode name] <summary of episode>\nHighlights: <list of highlight separate by newline>\n"]
 Summarize the following content:
 %[2]s
 `

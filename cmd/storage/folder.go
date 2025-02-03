@@ -12,19 +12,10 @@ import (
 
 // createDailyFolder creates a folder named with today's date (video_dd_mm_yy) under the 'source' folder
 func createDailyFolder() {
-	sourceDir := "source"
-
-	// Ensure the source folder exists
-	if _, err := os.Stat(sourceDir); os.IsNotExist(err) {
-		if err := os.Mkdir(sourceDir, os.ModePerm); err != nil {
-			log.Printf("Failed to create source folder: %v\n", err)
-			return
-		}
-	}
 
 	// Generate the folder name as today's date
 	dateFolder := util.GetTodayFolder()
-	folderPath := filepath.Join(sourceDir, dateFolder)
+	folderPath := filepath.Join(".", dateFolder)
 
 	// Create the date-named folder
 	if _, err := os.Stat(folderPath); os.IsNotExist(err) {
