@@ -21,10 +21,10 @@ var SplitByChunksCommand = &cli.Command{
 	Usage: "Split a video file into chunks of a specified size",
 	Flags: []cli.Flag{
 		&cli.StringFlag{
-			Name:    "input",
-			Aliases: []string{"i"},
-			Usage:   "Path to the input video file",
-			// Required: true,
+			Name:     "input",
+			Aliases:  []string{"i"},
+			Usage:    "Path to the input video file",
+			Required: true,
 		},
 		&cli.StringFlag{
 			Name:    "output",
@@ -41,15 +41,10 @@ var SplitByChunksCommand = &cli.Command{
 	},
 	Action: func(ctx context.Context, c *cli.Command) error {
 		input := c.String("input")
-		fmt.Println("split by chunk input", input, input == "")
-		dateFolder := util.GetTodayFolder()
-		if input == "" {
-			input = filepath.Join(".", dateFolder)
-			fmt.Println(input)
-		}
+		fmt.Println("split by chunk input", input)
 		output := c.String("output")
 		if output == "" {
-			output = filepath.Join("splitted", dateFolder)
+			output = filepath.Join("splitted", util.GetTodayFolder())
 		}
 		chunkSize := c.Int("chunk_size")
 		err := util.ApplyAllFileInDir(input, func(path string) error {

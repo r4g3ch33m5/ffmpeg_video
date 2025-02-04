@@ -81,7 +81,7 @@ func addWatermark(inputFile, watermarkFile, outputFile string) error {
 		"-filter_complex",
 		// "[1:v]scale=100:180,format=rgba,colorchannelmixer=aa=0.3[watermark];[0:v][watermark]overlay=" + overlays[rand.IntN(len(overlays))],
 		ffmpegFilter,
-		"-c:v", "libx264",
+		// "-c:v", "libx264",
 		"-crf", "23",
 		"-preset", "veryfast",
 		"-c:a", "copy",
@@ -135,7 +135,8 @@ var AddWatermarkCommand = &cli.Command{
 			watermarkFile = "./source/watermarks/github.png"
 		}
 		if outputFile == "" {
-			outputFile = filepath.Join(".", "watermarked", util.GetTodayFolder(), inputFile)
+			fileName := filepath.Base(inputFile)
+			outputFile = filepath.Join(".", "watermarked", util.GetTodayFolder(), fileName)
 		}
 		log.Printf("Adding watermark to video: %s\n", inputFile)
 		if err := addWatermark(inputFile, watermarkFile, outputFile); err != nil {

@@ -36,7 +36,8 @@ extract_audio:
 	go run main.go ffmpeg extract_audio
 
 full:
-	go run main.go full -source="https://www.youtube.com/watch?v=3Bq8uokFqOo"
+	go run main.go full 
+	# -source="https://www.youtube.com/watch?v=3Bq8uokFqOo"
 
 tidy:
 	go mod tidy && go mod vendor

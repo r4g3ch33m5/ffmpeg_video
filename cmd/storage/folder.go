@@ -15,7 +15,7 @@ func createDailyFolder() {
 
 	// Generate the folder name as today's date
 	dateFolder := util.GetTodayFolder()
-	folderPath := filepath.Join(".", dateFolder)
+	folderPath := filepath.Join(".", "source", dateFolder)
 
 	// Create the date-named folder
 	if _, err := os.Stat(folderPath); os.IsNotExist(err) {
@@ -26,6 +26,13 @@ func createDailyFolder() {
 		log.Printf("Folder '%s' created successfully!\n", folderPath)
 	} else {
 		log.Printf("Folder '%s' already exists.\n", folderPath)
+	}
+	filePath := filepath.Join(folderPath, "source.txt")
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		_, err := os.Create(filePath)
+		if err != nil {
+			log.Print(err)
+		}
 	}
 }
 

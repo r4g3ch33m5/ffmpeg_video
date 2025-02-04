@@ -30,9 +30,8 @@ func SplitVideoIntoChunks(ctx context.Context, req *ffmpeg_video.SplitVideoReque
 	var input, outputDir string = req.InputFile, req.OutputDir
 	var chunkSize int = int(req.ChunkSize)
 	// Ensure the output directory exists
-	_, inputFileName := filepath.Split(input)
-	makeDirIfNotExists(outputDir)
-	outputDir = filepath.Join(outputDir, inputFileName)
+	makeDirIfNotExists(filepath.Join(outputDir))
+	outputDir = filepath.Join(outputDir, filepath.Base(input))
 	makeDirIfNotExists(outputDir)
 	// Command for splitting video into chunks using FFmpeg
 	outputPattern := filepath.Join(outputDir, "chunk_%03d.mp4")

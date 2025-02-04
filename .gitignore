@@ -10,3 +10,6 @@ output/*
 # third party folder
 api/third_party/*
 vendor/
+
+# sources file
+source/*
