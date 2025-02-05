@@ -35,6 +35,9 @@ download:
 extract_audio:
 	go run main.go ffmpeg extract_audio
 
+init_source:
+	go run main.go youtube list
+
 full:
 	go run main.go full 
 	# -source="https://www.youtube.com/watch?v=3Bq8uokFqOo"

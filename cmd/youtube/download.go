@@ -24,7 +24,7 @@ func DownloadVideo(inp, outputDir string, options ...DownloadOption) error {
 	opts := []string{
 		"--force-overwrites",
 		"-f", "bv+ba",
-		"-o", fmt.Sprintf("%s/%%(channel_id)s.%%(id)s.%%(ext)s", outputDir),
+		"-o", fmt.Sprintf("%s/%%(channel_id)s.%%(id)s__%%(title)s__.%%(ext)s", outputDir),
 		"-o", fmt.Sprintf("subtitle:%s/%%(uploader)s/subs/%%(id)s.%%(ext)s", outputDir),
 	}
 	if option.IsBatchDownload {

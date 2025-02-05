@@ -84,7 +84,6 @@ func splitVideo(inputFile string, timestamps []string, outputDir string) error {
 			"-i", inputFile,
 			"-ss", start,
 			"-to", end,
-			"-c", "copy",
 			outputFile,
 		)
 

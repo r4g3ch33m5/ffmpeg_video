@@ -39,7 +39,7 @@ func SplitVideoIntoChunks(ctx context.Context, req *ffmpeg_video.SplitVideoReque
 		"ffmpeg",
 		"-i", input,
 		"-c", "copy", // Use copy codec to avoid re-encoding
-		"-map", "0", // Map all streams
+		"-map", "0:v", // Map all streams
 		"-segment_time", strconv.Itoa(chunkSize),
 		"-f", "segment",
 		"-reset_timestamps", "1",

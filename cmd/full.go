@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os/exec"
 	"path/filepath"
+	"regexp"
+	"strings"
 
 	"github.com/r4g3ch33m5/ffmpeg_video/cmd/ffmpeg"
 	"github.com/r4g3ch33m5/ffmpeg_video/cmd/storage"
@@ -13,13 +15,15 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
+var titleReg = regexp.MustCompile(`__(.*?)__`)
+
 var FullFlowCommand = &cli.Command{
 	Name: "full",
 	Flags: []cli.Flag{
-		// &cli.StringFlag{
-		// 	Name:     "source",
-		// 	Required: true,
-		// },
+		&cli.StringFlag{
+			Name: "source",
+			// Required: true,
+		},
 		&cli.StringFlag{
 			Name:    "output",
 			Aliases: []string{"o"},
@@ -44,9 +48,13 @@ var FullFlowCommand = &cli.Command{
 		}
 		util.ApplyAllFileInDir(sourceFolder, func(path string) error {
 			c.Set("input", path)
+			if strings.HasSuffix(path, ".txt") {
+				return nil
+			}
 			watermarkedFile := filepath.Join("watermarked", dateFolder, filepath.Base(path))
 			fmt.Println(watermarkedFile)
 			c.Set("output", watermarkedFile)
+
 			err := ffmpeg.AddWatermarkCommand.Action(ctx, c)
 			if err != nil {
 				fmt.Println(err)
@@ -58,11 +66,21 @@ var FullFlowCommand = &cli.Command{
 				fmt.Println(err)
 				return err
 			}
-			c.Set("output", "")
-			err = ffmpeg.SplitByChunksCommand.Action(ctx, c)
-			if err != nil {
-				return err
-			}
+			// c.Set("output", "")
+			// err = ffmpeg.SplitByChunksCommand.Action(ctx, c)
+			// if err != nil {
+			// 	return err
+			// }
+			title := titleReg.FindString(watermarkedFile)
+			err = youtube.UploadVideo(ctx, youtube.UploadVideoRequest{
+				FilePath:      watermarkedFile,
+				Title:         title,
+				Description:   "",
+				CategoryID:    "",
+				PrivacyStatus: "",
+				IsShort:       false,
+			})
+			fmt.Println(err)
 			return err
 		})
 

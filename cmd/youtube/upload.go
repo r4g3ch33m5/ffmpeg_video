@@ -32,46 +32,63 @@ func getToken() (*oauth2.Token, error) {
 
 }
 
-// UploadVideo uploads a video to YouTube
-func UploadVideo(filePath, title, description, categoryId, privacyStatus string) error {
-	ctx := context.Background()
-	credBytes, _ := os.ReadFile(filepath.Join(".", "credential", "google_client.json"))
+type UploadVideoRequest struct {
+	FilePath      string `json:"file_path"`
+	Title         string `json:"title"`
+	Description   string `json:"description"`
+	CategoryID    string `json:"category_id"`
+	PrivacyStatus string `json:"privacy_status"`
+	IsShort       bool   `json:"is_short"`
+}
+
+func UploadVideo(ctx context.Context, req UploadVideoRequest) error {
+	credBytes, err := os.ReadFile(filepath.Join(".", "credential", "google_client.json"))
+	if err != nil {
+		return fmt.Errorf("failed to read credential file: %w", err)
+	}
 
 	cred, err := google.ConfigFromJSON(credBytes, youtube.YoutubeUploadScope)
 	if err != nil {
-		fmt.Println("config", err)
-		return err
+		return fmt.Errorf("failed to parse credential config: %w", err)
 	}
+
 	token, err := getToken()
 	if err != nil {
-		fmt.Println("token:", err)
-		return err
+		return fmt.Errorf("failed to get token: %w", err)
 	}
+
 	service, err := youtube.NewService(ctx, option.WithHTTPClient(cred.Client(ctx, token)))
 	if err != nil {
 		return fmt.Errorf("unable to create YouTube client: %w", err)
 	}
 
-	// Open the video file
-	file, err := os.Open(filePath)
+	file, err := os.Open(req.FilePath)
 	if err != nil {
-		return fmt.Errorf("unable to open file %s: %w", filePath, err)
+		return fmt.Errorf("unable to open file %s: %w", req.FilePath, err)
 	}
 	defer file.Close()
 
-	// Define the video details
+	if req.PrivacyStatus == "" {
+		req.PrivacyStatus = "private"
+	}
+
+	tags := []string{}
+	if req.IsShort {
+		tags = append(tags, "short")
+	}
 	video := &youtube.Video{
 		Snippet: &youtube.VideoSnippet{
-			Title:       title,
-			Description: description,
-			CategoryId:  categoryId,
+			Title:       req.Title,
+			Description: req.Description,
+			CategoryId:  req.CategoryID,
+			Tags:        tags,
+			Thumbnails:  &youtube.ThumbnailDetails{},
 		},
 		Status: &youtube.VideoStatus{
-			PrivacyStatus: privacyStatus, // "public", "private", or "unlisted"
+			PrivacyStatus: req.PrivacyStatus,
 		},
 	}
 
-	// Upload the video
 	call := service.Videos.Insert([]string{"snippet", "status"}, video)
 	response, err := call.Media(file).Do()
 	if err != nil {
@@ -127,7 +144,14 @@ var UploadCommand = &cli.Command{
 		privacyStatus := c.String("privacy_status")
 
 		log.Printf("Uploading video: %s\n", filePath)
-		if err := UploadVideo(filePath, title, description, categoryId, privacyStatus); err != nil {
+		if err := UploadVideo(ctx, UploadVideoRequest{
+			FilePath:      filePath,
+			Title:         title,
+			Description:   description,
+			CategoryID:    categoryId,
+			PrivacyStatus: privacyStatus,
+			IsShort:       false,
+		}); err != nil {
 			return fmt.Errorf("error uploading video: %v", err)
 		}
 

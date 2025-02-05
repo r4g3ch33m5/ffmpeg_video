@@ -15,5 +15,6 @@ var YoutubeCommand = &cli.Command{
 		youtube.MetadataCommand,
 		youtube.UploadCommand,
 		youtube.Oauth2Command,
+		youtube.ListVideoCommand,
 	},
 }
