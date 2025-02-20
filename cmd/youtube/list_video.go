@@ -53,9 +53,10 @@ var ListVideoCommand = &cli.Command{
 			value := make([]byte, 0, 2048)
 			w := bytes.NewBuffer(value)
 			cmd.Stdout = w
+			cmd.Stderr = os.Stdout
 			err := cmd.Run()
 			if err != nil {
-				fmt.Println(err)
+				fmt.Println("err list video", err)
 				return err
 			}
 			fmt.Println(w.String())

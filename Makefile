@@ -38,9 +38,10 @@ extract_audio:
 init_source:
 	go run main.go youtube list
 
-full:
+full: init_source
 	go run main.go full 
 	# -source="https://www.youtube.com/watch?v=3Bq8uokFqOo"
-
+	go run main.go storage cleanup
+	go run main.go youtube refresh
 tidy:
 	go mod tidy && go mod vendor

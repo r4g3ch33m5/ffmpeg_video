@@ -72,13 +72,16 @@ var FullFlowCommand = &cli.Command{
 			// 	return err
 			// }
 			title := titleReg.FindString(watermarkedFile)
+			if _, isExists := db[filepath.Base(watermarkedFile)]; isExists {
+				fmt.Println("skip video", filepath.Base(watermarkedFile))
+				return nil
+			}
 			err = youtube.UploadVideo(ctx, youtube.UploadVideoRequest{
 				FilePath:      watermarkedFile,
 				Title:         title,
 				Description:   "",
 				CategoryID:    "",
-				PrivacyStatus: "",
-				IsShort:       false,
+				PrivacyStatus: "public",
 			})
 			fmt.Println(err)
 			return err

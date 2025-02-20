@@ -11,5 +11,6 @@ var CreateFolderCommand = &cli.Command{
 	Usage: "Start the cron job for creating daily folders",
 	Commands: []*cli.Command{
 		storage.CreateLocalFolderCommand,
+		storage.LocalStorageCleanupCommand,
 	},
 }

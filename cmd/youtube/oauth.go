@@ -68,25 +68,30 @@ func saveToken(path string, token *oauth2.Token) {
 	json.NewEncoder(f).Encode(token)
 }
 
+func getGgCredentail() *oauth2.Config {
+	credentialsFile := filepath.Join(".", "credential", "google_client.json")
+
+	// Load credentials.json
+	b, err := os.ReadFile(credentialsFile)
+	if err != nil {
+		log.Fatalf("Unable to read client secret file: %v", err)
+	}
+
+	// Parse the credentials file
+	config, err := google.ConfigFromJSON(b, youtube.YoutubeUploadScope)
+	if err != nil {
+		log.Fatalf("Unable to parse client secret file to config: %v", err)
+	}
+	return config
+}
+
 var Oauth2Command = &cli.Command{
 	Name:  "oauth2",
 	Usage: "Upload a video to YouTube",
 	Action: func(ctx context.Context, c *cli.Command) error {
-		credentialsFile := filepath.Join(".", "credential", "google_client.json")
+
+		config := getGgCredentail()
 		tokenFile := filepath.Join(".", "credential", "token.json")
-
-		// Load credentials.json
-		b, err := os.ReadFile(credentialsFile)
-		if err != nil {
-			log.Fatalf("Unable to read client secret file: %v", err)
-		}
-
-		// Parse the credentials file
-		config, err := google.ConfigFromJSON(b, youtube.YoutubeUploadScope)
-		if err != nil {
-			log.Fatalf("Unable to parse client secret file to config: %v", err)
-		}
-
 		// Get token from the web
 		token := getTokenFromWeb(config)
 
